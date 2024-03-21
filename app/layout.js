@@ -3,73 +3,47 @@ import React from 'react';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { Button, Flex, Menu } from 'antd';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'
 
 const items = [
   {
-    label: 'Navigation One',
-    key: 'mail',
+    label: '所有基金',
+    key: 'allFund',
   },
   {
-    label: 'Navigation Two',
-    key: 'app',
-    disabled: true,
+    label: '自选基金',
+    key: 'myFund',
+    // disabled: true,
   },
   {
-    label: 'Navigation Three - Submenu',
-    key: 'SubMenu',
-    children: [
-      {
-        type: 'group',
-        label: 'Item 1',
-        children: [
-          {
-            label: 'Option 1',
-            key: 'setting:1',
-          },
-          {
-            label: 'Option 2',
-            key: 'setting:2',
-          },
-        ],
-      },
-      {
-        type: 'group',
-        label: 'Item 2',
-        children: [
-          {
-            label: 'Option 3',
-            key: 'setting:3',
-          },
-          {
-            label: 'Option 4',
-            key: 'setting:4',
-          },
-        ],
-      },
-    ],
+    label: '基金账本',
+    key: 'myBill',
   },
   {
     label: (
-      <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-        Navigation Four - Link
-      </a>
+      // <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
+      //   Navigation Four - Link
+      // </a>
+      '用户'
     ),
-    key: 'alipay',
+    key: 'userInfo',
   },
 ];
 
 function RootLayout ({ children }){
-   const [current, setCurrent] = useState('mail');
+   const [current, setCurrent] = useState('allFund');
+   const router = useRouter()
    const onClick = (e) => {
      console.log('click ', e);
      setCurrent(e.key);
+     router.push(`/${e.key}`)
    };
 
   return (
-    <html lang="en">
+    <html lang="zh-CN">
     <body>
       <AntdRegistry>
-        <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} justify='space-evenly' />
+        <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} justify='space-evenly'/>
         {children}
       </AntdRegistry>
     </body>
