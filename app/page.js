@@ -1,8 +1,14 @@
 "use client";
 import React from 'react';
 import { Table } from 'antd';
+import { useLoginStore } from '@/store/useLoginStore';
+import { redirect } from 'next/navigation'
+
+
 
  function Home() {
+  const loginStatus = useLoginStore(state => state.loginStatus);
+
   const columns = [
     {
       title: 'Full Name',
@@ -98,18 +104,23 @@ import { Table } from 'antd';
       address: `London Park no.${i} `,
     });
   }
-  return (
-    <>
-      <Table
-        columns={columns}
-        dataSource={data}
-        scroll={{
-          x: 1500,
-          y: 600,
-        }}
-      />
-    </>
-  );
+
+  if(!loginStatus){
+    redirect('/login');
+  }else{
+    return (
+      <>
+        <Table
+          columns={columns}
+          dataSource={data}
+          scroll={{
+            x: 1500,
+            y: 600,
+          }}
+        />
+      </>
+    );
+  }
 }
 
 export default Home;  

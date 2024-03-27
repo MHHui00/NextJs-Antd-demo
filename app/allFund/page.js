@@ -3,18 +3,15 @@ import { Table, Button, message, Popconfirm, Input, Space } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import React, { useEffect, useState, useRef } from 'react'
+import { useLoginStore } from '@/store/useLoginStore';
+import { redirect } from 'next/navigation'
 
 
-const a = {
-  "fid": "000001",
-  "name": "华夏成长混合",
-  "rate": 0.15,
-  "leixin": "混合型-灵活",
-  "pinyin": "HXCZHH",
-  "value": 345
-}
+
 
 function Home() {
+  const loginStatus = useLoginStore(state => state.loginStatus);
+
 
   //搜索Start
   const [searchText, setSearchText] = useState('');
@@ -267,23 +264,28 @@ function Home() {
 
     fetchData();
   }, []);
-  return (
-    <>
-      <Table
-        columns={columns}
-        dataSource={data}
-        scroll={{
-          x: 1500,
-          y: 600,
-        }}
-        locale={{
-          triggerDesc: '点击降序排列',
-          triggerAsc: '点击升序排列',
-          cancelSort: '点击取消排序'
-        }}
-      />
-    </>
-  );
+
+  if(!loginStatus){
+    redirect('/login');
+  }else{
+    return (
+      <>
+        <Table
+          columns={columns}
+          dataSource={data}
+          scroll={{
+            x: 1500,
+            y: 600,
+          }}
+          locale={{
+            triggerDesc: '点击降序排列',
+            triggerAsc: '点击升序排列',
+            cancelSort: '点击取消排序'
+          }}
+        />
+      </>
+    );
+  }
 }
 
 export default Home;  

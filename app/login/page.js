@@ -1,9 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input, Flex } from 'antd';
+import { Button, Checkbox, Form, Input, Flex, message } from 'antd';
 import Link from 'next/link';
-import {useRouter} from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import { useLoginStore } from '@/store/useLoginStore';
 
 const boxStyle = {
   width: '100%',
@@ -12,12 +13,39 @@ const boxStyle = {
   border: '1px solid #40a9ff',
 };
 const App = () => {
-  const [loginState, serLoginState] = useState(true); //测试阶段默认登陆成功
+  const { loginStatus, setLogin, uid, setUid, username, setUsername } = useLoginStore();
   const router = useRouter();
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
-    if(loginState)
-      router.push('/allFund')
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const loginFailed = () => {
+    messageApi.open({
+      type: 'error',
+      content: '登陆失败，请重试',
+    });
+  };
+
+  async function onFinish(values) {
+    try {
+      const response = await fetch(`/api/login?username=${values.username}&password=${values.password}`);
+      if (response.ok) {
+        const jsonData = await response.text(); // 先获取文本内容
+        try {
+          const obj = JSON.parse(jsonData); // 尝试解析文本为JSON
+          console.log(obj);
+          await setLogin();
+          await setUid(obj.uid);
+          await setUsername(obj.username);
+          router.push('/');
+        } catch (error) {
+          console.error("Parsing error:", error);
+        }
+      } else {
+        ()=>{loginFailed}
+        console.error("API call failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Fetching error:", error);
+    }
   };
   return (
     <Flex gap="middle" vertical justify='center' align='center' style={boxStyle}>
@@ -29,7 +57,7 @@ const App = () => {
           remember: true,
         }}
         onFinish={onFinish}
-        
+
       >
         <Form.Item
           name="username"
