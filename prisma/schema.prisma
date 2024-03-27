@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model config {
+  listtime String? @db.VarChar(32)
+  ratetime String? @db.VarChar(32)
+  rt_time  String? @db.VarChar(32)
+  his_time String? @db.VarChar(32)
+
+  @@ignore
+}
+
+model fdata {
+  fid    String  @id @db.VarChar(6)
+  w01    Float?
+  w02    Float?
+  w03    Float?
+  w04    Float?
+  M01    Float?
+  w05    Float?
+  w06    Float?
+  w07    Float?
+  w08    Float?
+  M02    Float?
+  name   String? @db.VarChar(60)
+  Value  Float?
+  Rate   Float?
+  R01    Float?
+  R02    Float?
+  R03    Float?
+  R04    Float?
+  R05    Float?
+  R06    Float?
+  R07    Float?
+  R08    Float?
+  R09    Float?
+  R10    Float?
+  R11    Float?
+  R12    Float?
+  R13    Float?
+  R14    Float?
+  R15    Float?
+  R16    Float?
+  R17    Float?
+  R18    Float?
+  R19    Float?
+  R20    Float?
+  R21    Float?
+  R22    Float?
+  R23    Float?
+  R24    Float?
+  R25    Float?
+  R26    Float?
+  R27    Float?
+  R28    Float?
+  R29    Float?
+  R30    Float?
+  R31    Float?
+  R32    Float?
+  R33    Float?
+  R34    Float?
+  R35    Float?
+  R36    Float?
+  R37    Float?
+  R38    Float?
+  R39    Float?
+  R40    Float?
+  pinyin String? @db.VarChar(32)
+  bh     Int?
+}
+
+model flist {
+  fid    String  @id @db.VarChar(6)
+  name   String? @db.VarChar(255)
+  rate   Float?
+  leixin String? @db.VarChar(255)
+  pinyin String? @db.VarChar(255)
+  value  Float
+}
+
+model oprec {
+  bh         Int     @id
+  fid        String? @db.VarChar(6)
+  name       String? @db.VarChar(60)
+  rq         String? @db.VarChar(255)
+  tianshu    Int?
+  shouyilv   Float?
+  gushouyi   Float?
+  gujinzhi   Float?
+  jinzhi     Float?
+  fenshu     Float?
+  s_shouyilv Float?
+  s_gushouyi Float?
+  s_gujinzhi Float?
+  s_jinzhi   Float?
+  s_fenshu   Float?
+  s_fid      String? @db.VarChar(6)
+  s_name     String? @db.VarChar(64)
+  zhuangtai  String? @db.VarChar(255)
+  shuomin    String? @db.VarChar(255)
+}
+
+model user {
+  uid      Int        @id @default(autoincrement())
+  username String     @db.VarChar(10)
+  password String     @db.VarChar(10)
+  zhangben zhangben[]
+  zixuan   zixuan[]
+}
+
+model zhangben {
+  fid       String  @id @db.VarChar(6)
+  name      String? @db.VarChar(60)
+  fenshu    Float?
+  yuanjia   Float?
+  yuanzhi   Float?
+  xianjia   Float?
+  xianzhi   Float?
+  shouyi    Float?
+  shouyilv  Float?
+  guzhi     Float?
+  gujia     Float?
+  gushouyi  Float?
+  shuomin   String? @db.VarChar(255)
+  newjia    Float?
+  newzhi    Float?
+  newshouyi Float?
+  bh        String? @db.Char(1)
+  uid       Int
+  user      user    @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "zhangben_uid")
+
+  @@index([uid], map: "zhangben_uid")
+}
+
+model zixuan {
+  fid    String  @id @db.VarChar(6)
+  w01    Float?
+  w02    Float?
+  w03    Float?
+  w04    Float?
+  M01    Float?
+  w05    Float?
+  w06    Float?
+  w07    Float?
+  w08    Float?
+  M02    Float?
+  name   String? @db.VarChar(60)
+  Value  Float?
+  Rate   Float?
+  R01    Float?
+  R02    Float?
+  R03    Float?
+  R04    Float?
+  R05    Float?
+  R06    Float?
+  R07    Float?
+  R08    Float?
+  R09    Float?
+  R10    Float?
+  R11    Float?
+  R12    Float?
+  R13    Float?
+  R14    Float?
+  R15    Float?
+  R16    Float?
+  R17    Float?
+  R18    Float?
+  R19    Float?
+  R20    Float?
+  R21    Float?
+  R22    Float?
+  R23    Float?
+  R24    Float?
+  R25    Float?
+  R26    Float?
+  R27    Float?
+  R28    Float?
+  R29    Float?
+  R30    Float?
+  R31    Float?
+  R32    Float?
+  R33    Float?
+  R34    Float?
+  R35    Float?
+  R36    Float?
+  R37    Float?
+  R38    Float?
+  R39    Float?
+  R40    Float?
+  pinyin String? @db.VarChar(32)
+  bh     String? @db.Char(1)
+  uid    Int
+  user   user    @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "zixuan_uid")
+
+  @@index([uid], map: "zixuan_uid")
+}

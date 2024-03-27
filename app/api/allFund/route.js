@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 
 export async function GET(request) {
   const prisma = new PrismaClient();
-  const result = await prisma.zixuan.findMany();
+  const result = await prisma.flist.findMany();
   // const data = JSON.stringify(result);
   
   const processedData = result.map(item => {
@@ -17,7 +17,7 @@ export async function GET(request) {
     }
     return processedItem;
   });
-  console.log(processedData);
+  // console.log(processedData);
 
 
   return new Response(JSON.stringify(processedData), {

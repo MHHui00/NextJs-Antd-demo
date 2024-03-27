@@ -17,7 +17,7 @@ export async function GET(request) {
     }
     return processedItem;
   });
-  console.log(processedData);
+//   console.log(processedData);
 
 
   return new Response(JSON.stringify(processedData), {

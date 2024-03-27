@@ -1,103 +1,272 @@
 "use client";
-import React from 'react';
-import { Table } from 'antd';
+import { Table, Button, message, Popconfirm, Input, Space } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import Highlighter from 'react-highlight-words';
+import React, { useEffect, useState, useRef } from 'react'
 
- function Home() {
+
+const a = {
+  "fid": "000001",
+  "name": "华夏成长混合",
+  "rate": 0.15,
+  "leixin": "混合型-灵活",
+  "pinyin": "HXCZHH",
+  "value": 345
+}
+
+function Home() {
+
+  //搜索Start
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`输入 ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            搜索
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            重置
+          </Button>
+          {/* <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button> */}
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            关闭
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1677ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+  //搜索End
+  
   const columns = [
     {
-      title: 'Full Name',
-      width: 100,
-      dataIndex: 'name',
+      title: '基金代码',
+      width: '10%',
+      dataIndex: 'fid',
       key: 'name',
       fixed: 'left',
+      sorter: (a, b) => a.fid - b.fid,
+      ...getColumnSearchProps('fid'),
     },
     {
-      title: 'Age',
-      width: 100,
-      dataIndex: 'age',
+      title: '基金名称',
+      width: '15%',
+      dataIndex: 'name',
       key: 'age',
       fixed: 'left',
-      defaultSortOrder: 'descend',
-      sorter: (a, b) => a.age - b.age,
+      ...getColumnSearchProps('name'),
     },
     {
-      title: 'Column 1',
-      dataIndex: 'address',
+      title: '实时涨幅',
+      dataIndex: 'rate',
       key: '1',
-      width: 150,
-      
+      width: 50,
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => a.rate - b.rate,
+      render(text, record) {
+        return {
+          props: {
+            style: { color: parseFloat(text) > 0 ? "red" : "green" }
+          },
+          children: <div>{text}</div>
+        };
+      }
     },
     {
-      title: 'Column 2',
-      dataIndex: 'address',
+      title: '实时净值',
+      dataIndex: 'value',
       key: '2',
-      width: 150,
+      width: 50,
+      defaultSortOrder: 'descend',
+      sorter: (a, b) => a.value - b.value,
     },
     {
-      title: 'Column 3',
-      dataIndex: 'address',
+      title: '基金类型',
+      dataIndex: 'leixin',
       key: '3',
-      width: 150,
+      width: 50,
     },
     {
-      title: 'Column 4',
-      dataIndex: 'address',
+      title: '拼音代码',
+      dataIndex: 'pinyin',
       key: '4',
-      width: 150,
-    },
-    {
-      title: 'Column 5',
-      dataIndex: 'address',
-      key: '5',
-      width: 150,
-    },
-    {
-      title: 'Column 6',
-      dataIndex: 'address',
-      key: '6',
-      width: 150,
-    },
-    {
-      title: 'Column 7',
-      dataIndex: 'address',
-      key: '7',
-      width: 150,
-    },
-    {
-      title: 'Column 8',
-      dataIndex: 'address',
-      key: '8',
-      width: 150,
-    },
-    {
-      title: 'Column 9',
-      dataIndex: 'address',
-      key: '9',
-      width: 150,
-    },
-    {
-      title: 'Column 10',
-      dataIndex: 'address',
-      key: '10',
-      width: 150,
+      width: 80,
     },
     {
       title: 'Action',
       key: 'operation',
       fixed: 'right',
-      width: 100,
-      render: () => <a>Action</a>,
+      width: '15%',
+      render: (text, record) =>
+        <>
+          {contextHolder}
+          <Popconfirm
+            title="Delete the task"
+            description="Are you sure to delete this task?"
+            onConfirm={()=>addToMyFund(record)}
+            // onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button size='small'>加入自选</Button>
+          </Popconfirm>
+          <Button onClick={error} size='small'>查看图表</Button>
+          <Button onClick={error} size='small'>买入</Button>
+        </>
     },
   ];
-  const data = [];
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i,
-      name: `Edward ${i}`,
-      age: i,
-      address: `London Park no.${i} `,
+
+  //全局提示
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const success = () => {
+    messageApi.open({
+      type: 'success',
+      content: 'This is a success message',
     });
-  }
+  };
+
+  const error = () => {
+    messageApi.open({
+      type: 'error',
+      content: 'This is an error message',
+    });
+  };
+
+  // 加入自选
+  const addToMyFund = (record) => {
+    console.log(record.fid);
+    // message.success('Click on Yes');
+    messageApi.open({
+      type: 'success',
+      content: 'This is a success message',
+    });
+  };
+  const cancel = (e) => {
+    console.log(e);
+    message.error('Click on No');
+  };
+
+
+  
+
+
+
+
+  
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/allFund');
+        if (response.ok) {
+          const jsonData = await response.text(); // 先获取文本内容
+          try {
+            const obj = JSON.parse(jsonData); // 尝试解析文本为JSON
+            // console.log(obj);
+            setData(obj);
+          } catch (error) {
+            console.error("Parsing error:", error);
+            console.log("Received text:", jsonData);
+          }
+        } else {
+          console.error("API call failed:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Fetching error:", error);
+        setData({ error: "Failed to load data." }); // 设置错误信息，以便在页面上显示
+      }
+    }
+
+    fetchData();
+  }, []);
   return (
     <>
       <Table
@@ -106,6 +275,11 @@ import { Table } from 'antd';
         scroll={{
           x: 1500,
           y: 600,
+        }}
+        locale={{
+          triggerDesc: '点击降序排列',
+          triggerAsc: '点击升序排列',
+          cancelSort: '点击取消排序'
         }}
       />
     </>
