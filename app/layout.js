@@ -2,18 +2,22 @@
 import React from 'react';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { Button, Flex, Menu } from 'antd';
-import { useState } from 'react';
-import { useRouter, redirect } from 'next/navigation'
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'
 import { useLoginStore } from '@/store/useLoginStore';
 
 
 
 
 function RootLayout({ children }) {
-  const userName = useLoginStore(state => state.username);
   const loginStatus = useLoginStore(state => state.loginStatus);
+  const userName = useLoginStore(state => state.userName);
+
+  const router = useRouter();
+
+  const [data, setData] = useState([]);
   const [current, setCurrent] = useState('allFund');
-  const router = useRouter()
+  
   const onClick = (e) => {
     console.log('click ', e);
     setCurrent(e.key);
@@ -35,6 +39,10 @@ function RootLayout({ children }) {
       key: 'myBill',
     },
     {
+      label: '用戶管理',
+      key: 'userManage',
+    },
+    {
       label: (
 
         `${userName}`
@@ -52,19 +60,20 @@ function RootLayout({ children }) {
       ]
     },
   ];
+  
+  useEffect(() => {
+    if (!loginStatus) {
+      router.push('/login');
+    }
+  }, [loginStatus, router]);
 
-  // if(!loginStatus){
-  //   redirect('/login');
-  // }else{
-  // }
 
   return (
     <html lang="zh-CN">
       <body>
         <AntdRegistry>
-          {/* <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} justify='space-evenly' /> */}
-          {/* {loginStatus?children:redirect('/login')}  */}
-          {loginStatus && <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} justify='space-evenly' />}
+          <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} justify='space-evenly' />
+          {/* {typeof window !== 'undefined' && loginStatus && <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />} */}
           {children}
         </AntdRegistry>
       </body>

@@ -1,9 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, Flex, message } from 'antd';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation'
+import { useRouter, redirect } from 'next/navigation'
 import { useLoginStore } from '@/store/useLoginStore';
 
 const boxStyle = {
@@ -13,7 +13,8 @@ const boxStyle = {
   border: '1px solid #40a9ff',
 };
 const App = () => {
-  const { loginStatus, setLogin, uid, setUid, username, setUsername } = useLoginStore();
+  const loginStatus = useLoginStore(state => state.loginStatus);
+
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -21,6 +22,12 @@ const App = () => {
     messageApi.open({
       type: 'error',
       content: '登陆失败，请重试',
+    });
+  };
+  const loginRemind = () => {
+    messageApi.open({
+      type: 'error',
+      content: '请先登陆',
     });
   };
 
@@ -32,21 +39,30 @@ const App = () => {
         try {
           const obj = JSON.parse(jsonData); // 尝试解析文本为JSON
           console.log(obj);
-          await setLogin();
-          await setUid(obj.uid);
-          await setUsername(obj.username);
+          useLoginStore.setState({ loginStatus: true });
+          useLoginStore.setState({ userName: obj.username });
+          useLoginStore.setState({ userId: obj.uid });
           router.push('/');
+
         } catch (error) {
           console.error("Parsing error:", error);
         }
       } else {
-        ()=>{loginFailed}
+        () => { loginFailed }
         console.error("API call failed:", response.statusText);
       }
     } catch (error) {
       console.error("Fetching error:", error);
     }
   };
+
+  useEffect(() => {
+    if (loginStatus) {
+      router.push('/allFund');
+    }
+    ()=>loginRemind();
+  }, [loginStatus, router]);
+
   return (
     <Flex gap="middle" vertical justify='center' align='center' style={boxStyle}>
 
@@ -107,5 +123,6 @@ const App = () => {
       </Form>
     </Flex>
   );
+
 };
 export default App;

@@ -4,13 +4,12 @@ import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import React, { useEffect, useState, useRef } from 'react'
 import { useLoginStore } from '@/store/useLoginStore';
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 
 
 
 
 function Home() {
-  const loginStatus = useLoginStore(state => state.loginStatus);
 
 
   //搜索Start
@@ -237,9 +236,14 @@ function Home() {
 
 
 
-  
+  const loginStatus = useLoginStore(state => state.loginStatus);
+  const router = useRouter()
   const [data, setData] = useState([]);
   useEffect(() => {
+    if (!loginStatus) {
+      router.push('/login');
+    }
+
     async function fetchData() {
       try {
         const response = await fetch('/api/allFund');
@@ -263,29 +267,30 @@ function Home() {
     }
 
     fetchData();
-  }, []);
+  }, [loginStatus, router]);
 
-  if(!loginStatus){
-    redirect('/login');
-  }else{
-    return (
-      <>
-        <Table
-          columns={columns}
-          dataSource={data}
-          scroll={{
-            x: 1500,
-            y: 600,
-          }}
-          locale={{
-            triggerDesc: '点击降序排列',
-            triggerAsc: '点击升序排列',
-            cancelSort: '点击取消排序'
-          }}
-        />
-      </>
-    );
-  }
+  // if(loginStatus === false){
+  //   console.log("login first");
+  //   redirect('/login');
+  // }else{
+  // }
+  return (
+    <>
+      <Table
+        columns={columns}
+        dataSource={data}
+        scroll={{
+          x: 1500,
+          y: 600,
+        }}
+        locale={{
+          triggerDesc: '点击降序排列',
+          triggerAsc: '点击升序排列',
+          cancelSort: '点击取消排序'
+        }}
+      />
+    </>
+  );
 }
 
 export default Home;  
