@@ -17,6 +17,9 @@ function RootLayout({ children }) {
 
   const [data, setData] = useState([]);
   const [current, setCurrent] = useState('allFund');
+
+  const [isClientReady, setIsClientReady] = useState(false); //1. 新增状态，解决服务端和客户端不一致
+
   
   const onClick = (e) => {
     console.log('click ', e);
@@ -65,6 +68,7 @@ function RootLayout({ children }) {
     if (!loginStatus) {
       router.push('/login');
     }
+    setIsClientReady(true); // 2.当客户端准备好后，设置为true
   }, [loginStatus, router]);
 
 
@@ -72,8 +76,9 @@ function RootLayout({ children }) {
     <html lang="zh-CN">
       <body>
         <AntdRegistry>
-          <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} justify='space-evenly' />
+          {/* <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} justify='space-evenly' /> */}
           {/* {typeof window !== 'undefined' && loginStatus && <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />} */}
+          {isClientReady && loginStatus && <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />}
           {children}
         </AntdRegistry>
       </body>

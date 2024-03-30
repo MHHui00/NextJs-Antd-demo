@@ -74,7 +74,12 @@ const page = () => {
           try {
             const obj = JSON.parse(jsonData); // 尝试解析文本为JSON
             // console.log(obj);
-            setData(obj);
+            // setData(obj);
+            const dataWithKeys = obj.map((item) => ({
+              ...item,
+              key: item.fid, // 使用更稳定的唯一标识作为key
+            }));
+            setData(dataWithKeys);
           } catch (error) {
             console.error("Parsing error:", error);
             console.log("Received text:", jsonData);

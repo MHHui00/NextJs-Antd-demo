@@ -148,19 +148,29 @@ const page = () => {
       key: 'value',
 
     },
+    // {
+    //   title: '实时涨幅',
+    //   width: 100,
+    //   dataIndex: 'Rate',
+    //   key: 'rate',
+    //   render(text, record) {
+    //     return {
+    //       props: {
+    //         style: { color: parseFloat(text) > 0 ? "red" : "green" }
+    //       },
+    //       children: <div>{text}</div>
+    //     };
+    //   },
+    // },
     {
       title: '实时涨幅',
       width: 100,
       dataIndex: 'Rate',
       key: 'rate',
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.Rate) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近1周',
@@ -169,14 +179,10 @@ const page = () => {
       key: 'w01',
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.w01 - b.w01,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.w01) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近2周',
@@ -184,14 +190,10 @@ const page = () => {
       key: '1',
       width: 75,
       sorter: (a, b) => a.w02 - b.w02,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.w02) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近3周',
@@ -199,14 +201,10 @@ const page = () => {
       key: '2',
       width: 75,
       sorter: (a, b) => a.w03 - b.w03,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.w03) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近4周',
@@ -214,14 +212,10 @@ const page = () => {
       key: '3',
       width: 75,
       sorter: (a, b) => a.w04 - b.w04,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.w04) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
 
     },
     {
@@ -230,14 +224,10 @@ const page = () => {
       key: '4',
       width: 75,
       sorter: (a, b) => a.w05 - b.w05,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.w05) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近6周',
@@ -245,14 +235,10 @@ const page = () => {
       key: '5',
       width: 75,
       sorter: (a, b) => a.w06 - b.w06,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.w06) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近7周',
@@ -260,14 +246,10 @@ const page = () => {
       key: '6',
       width: 75,
       sorter: (a, b) => a.w07 - b.w07,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.w07) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近8周',
@@ -275,14 +257,10 @@ const page = () => {
       key: '7',
       width: 75,
       sorter: (a, b) => a.w08 - b.w08,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.w08) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近1月',
@@ -290,14 +268,10 @@ const page = () => {
       key: '8',
       width: 75,
       sorter: (a, b) => a.M01 - b.M01,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.M01) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近2月',
@@ -305,14 +279,10 @@ const page = () => {
       key: '9',
       width: 75,
       sorter: (a, b) => a.M02 - b.M02,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.M02) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近1天',
@@ -320,14 +290,10 @@ const page = () => {
       key: '10',
       width: 75,
       sorter: (a, b) => a.R01 - b.R01,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R02) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近2天',
@@ -335,14 +301,10 @@ const page = () => {
       key: '11',
       width: 75,
       sorter: (a, b) => a.R02 - b.R02,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R02) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近3天',
@@ -350,14 +312,10 @@ const page = () => {
       key: '12',
       width: 75,
       sorter: (a, b) => a.R03 - b.R03,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R03) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近4天',
@@ -365,14 +323,10 @@ const page = () => {
       key: '13',
       width: 75,
       sorter: (a, b) => a.R04 - b.R04,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R04) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近5天',
@@ -380,14 +334,10 @@ const page = () => {
       key: '14',
       width: 75,
       sorter: (a, b) => a.R05 - b.R05,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R05) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近6天',
@@ -395,14 +345,10 @@ const page = () => {
       key: '15',
       width: 75,
       sorter: (a, b) => a.R06 - b.R06,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R06) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近7天',
@@ -410,14 +356,10 @@ const page = () => {
       key: '16',
       width: 75,
       sorter: (a, b) => a.R07 - b.R07,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R07) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近8天',
@@ -425,14 +367,10 @@ const page = () => {
       key: '17',
       width: 75,
       sorter: (a, b) => a.R08 - b.R08,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R08) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近9天',
@@ -440,14 +378,10 @@ const page = () => {
       key: '18',
       width: 75,
       sorter: (a, b) => a.R09 - b.R09,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R09) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近10天',
@@ -455,14 +389,10 @@ const page = () => {
       key: '19',
       width: 75,
       sorter: (a, b) => a.R10 - b.R10,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R10) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近11天',
@@ -470,14 +400,10 @@ const page = () => {
       key: '20',
       width: 75,
       sorter: (a, b) => a.R11 - b.R11,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R11) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近12天',
@@ -485,14 +411,10 @@ const page = () => {
       key: '21',
       width: 75,
       sorter: (a, b) => a.R12 - b.R12,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R12) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近13天',
@@ -500,14 +422,10 @@ const page = () => {
       key: '22',
       width: 75,
       sorter: (a, b) => a.R13 - b.R13,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R13) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近14天',
@@ -515,14 +433,10 @@ const page = () => {
       key: '23',
       width: 75,
       sorter: (a, b) => a.R14 - b.R14,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R14) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近15天',
@@ -530,14 +444,10 @@ const page = () => {
       key: '24',
       width: 75,
       sorter: (a, b) => a.R15 - b.R15,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R15) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近16天',
@@ -545,14 +455,10 @@ const page = () => {
       key: '25',
       width: 75,
       sorter: (a, b) => a.R16 - b.R16,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R16) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近17天',
@@ -560,14 +466,10 @@ const page = () => {
       key: '26',
       width: 75,
       sorter: (a, b) => a.R17 - b.R17,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R17) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近18天',
@@ -575,14 +477,10 @@ const page = () => {
       key: '27',
       width: 75,
       sorter: (a, b) => a.R18 - b.R18,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R18) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近19天',
@@ -590,14 +488,10 @@ const page = () => {
       key: '28',
       width: 75,
       sorter: (a, b) => a.R19 - b.R19,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R19) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近20天',
@@ -605,14 +499,10 @@ const page = () => {
       key: '29',
       width: 75,
       sorter: (a, b) => a.R20 - b.R20,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R20) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近21天',
@@ -620,14 +510,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R21 - b.R21,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R21) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近22天',
@@ -635,14 +521,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R22 - b.R22,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R22) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近23天',
@@ -650,14 +532,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R23 - b.R23,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R23) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近24天',
@@ -665,14 +543,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R24 - b.R24,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R24) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近25天',
@@ -680,14 +554,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R25 - b.R25,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R25) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近26天',
@@ -695,14 +565,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R26 - b.R26,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R26) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近27天',
@@ -710,14 +576,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R27 - b.R27,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R27) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近28天',
@@ -725,14 +587,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R28 - b.R28,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R28) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近29天',
@@ -740,14 +598,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R29 - b.R29,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R29) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: '近30天',
@@ -755,14 +609,10 @@ const page = () => {
       key: '30',
       width: 75,
       sorter: (a, b) => a.R30 - b.R30,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      },
+      onCell: (record) => ({
+        style: { color: parseFloat(record.R30) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
     {
       title: 'Action',
@@ -834,7 +684,12 @@ const page = () => {
           try {
             const obj = JSON.parse(jsonData); // 尝试解析文本为JSON
             // console.log(obj);
-            setData(obj);
+            // setData(obj);
+            const dataWithKeys = obj.map((item) => ({
+              ...item,
+              key: item.fid, // 使用更稳定的唯一标识作为key
+            }));
+            setData(dataWithKeys);
           } catch (error) {
             console.error("Parsing error:", error);
             // console.log("Received text:", jsonData);

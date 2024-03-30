@@ -11,6 +11,7 @@ function Home() {
   const loginStatus = useLoginStore(state => state.loginStatus);
   const userId = useLoginStore(state => state.userId);
 
+
   const router = useRouter()
   const [data, setData] = useState([]);
 
@@ -128,6 +129,22 @@ function Home() {
       fixed: 'left',
       ...getColumnSearchProps('name'),
     },
+    // {
+    //   title: '实时涨幅',
+    //   dataIndex: 'rate',
+    //   key: '1',
+    //   width: 50,
+    //   defaultSortOrder: 'descend',
+    //   sorter: (a, b) => a.rate - b.rate,
+    //   render(text, record) {
+    //     return {
+    //       props: {
+    //         style: { color: parseFloat(text) > 0 ? "red" : "green" }
+    //       },
+    //       children: <div>{text}</div>
+    //     };
+    //   }
+    // },
     {
       title: '实时涨幅',
       dataIndex: 'rate',
@@ -135,15 +152,12 @@ function Home() {
       width: 50,
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.rate - b.rate,
-      render(text, record) {
-        return {
-          props: {
-            style: { color: parseFloat(text) > 0 ? "red" : "green" }
-          },
-          children: <div>{text}</div>
-        };
-      }
+      onCell: (record) => ({
+        style: { color: parseFloat(record.rate) > 0 ? "red" : "green" }
+      }),
+      render: (text) => <div>{text}</div>,
     },
+    
     {
       title: '实时净值',
       dataIndex: 'value',
@@ -248,7 +262,11 @@ function Home() {
           try {
             const obj = JSON.parse(jsonData); // 尝试解析文本为JSON
             // console.log(obj);
-            setData(obj);
+            const dataWithKeys = obj.map((item) => ({
+              ...item,
+              key: item.fid, // 使用更稳定的唯一标识作为key
+            }));
+            setData(dataWithKeys);
           } catch (error) {
             console.error("Parsing error:", error);
             console.log("Received text:", jsonData);
@@ -265,11 +283,6 @@ function Home() {
     fetchData();
   }, [loginStatus, router]);
 
-  // if(loginStatus === false){
-  //   console.log("login first");
-  //   redirect('/login');
-  // }else{
-  // }
   return (
     <>
       <Table
