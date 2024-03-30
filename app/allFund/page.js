@@ -7,10 +7,12 @@ import { useLoginStore } from '@/store/useLoginStore';
 import { useRouter } from 'next/navigation';
 
 
-
-
 function Home() {
+  const loginStatus = useLoginStore(state => state.loginStatus);
+  const userId = useLoginStore(state => state.userId);
 
+  const router = useRouter()
+  const [data, setData] = useState([]);
 
   //搜索Start
   const [searchText, setSearchText] = useState('');
@@ -65,19 +67,6 @@ function Home() {
           >
             重置
           </Button>
-          {/* <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button> */}
           <Button
             type="link"
             size="small"
@@ -202,13 +191,6 @@ function Home() {
   //全局提示
   const [messageApi, contextHolder] = message.useMessage();
 
-  const success = () => {
-    messageApi.open({
-      type: 'success',
-      content: 'This is a success message',
-    });
-  };
-
   const error = () => {
     messageApi.open({
       type: 'error',
@@ -217,17 +199,33 @@ function Home() {
   };
 
   // 加入自选
-  const addToMyFund = (record) => {
-    console.log(record.fid);
-    // message.success('Click on Yes');
-    messageApi.open({
-      type: 'success',
-      content: 'This is a success message',
-    });
-  };
-  const cancel = (e) => {
-    console.log(e);
-    message.error('Click on No');
+  const addToMyFund = async (record) => {
+    try {
+      const response = await fetch(`/api/addToMyFund?fid=${record.fid}&userId=${userId}&fundName=${record.name}`, {
+        method: 'POST', // 确保使用正确的 HTTP 方法
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // alert(data.message); // 或者使用更友好的用户通知方式
+        messageApi.open({
+          type: 'success',
+          content: data.message,
+        });
+      } else {
+        // 处理错误情况，例如基金已存在于列表中
+        // alert(data.message); // 根据 API 返回的消息显示提示
+        messageApi.open({
+          type: 'eorror',
+          content: data.message,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to add to favorites:', error);
+      alert('Failed to add to favorites. Please try again.'); // 显示一个错误消息
+    }
   };
 
 
@@ -236,9 +234,7 @@ function Home() {
 
 
 
-  const loginStatus = useLoginStore(state => state.loginStatus);
-  const router = useRouter()
-  const [data, setData] = useState([]);
+  
   useEffect(() => {
     if (!loginStatus) {
       router.push('/login');

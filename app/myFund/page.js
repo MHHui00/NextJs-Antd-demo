@@ -7,6 +7,10 @@ import { useLoginStore } from '@/store/useLoginStore';
 import { redirect, useRouter } from 'next/navigation'
 
 const page = () => {
+  const loginStatus = useLoginStore(state => state.loginStatus);
+  const userId = useLoginStore(state => state.userId);
+  const router = useRouter();
+  const [data, setData] = useState([]);
 
   //搜索Start
   const [searchText, setSearchText] = useState('');
@@ -817,16 +821,14 @@ const page = () => {
 
 
   //
-  const loginStatus = useLoginStore(state => state.loginStatus);
-  const router = useRouter();
-  const [data, setData] = useState([]);
+  
   useEffect(() => {
     if (!loginStatus) {
       router.push('/login');
     }
     async function fetchData() {
       try {
-        const response = await fetch('/api/myFund');
+        const response = await fetch(`/api/myFund?userId=${userId}`);
         if (response.ok) {
           const jsonData = await response.text(); // 先获取文本内容
           try {
