@@ -1,11 +1,17 @@
 "use client";
-import { Table, Button, message, Popconfirm, Input, Space, Drawer, Row, Form, Col, Image } from 'antd';
+import { Table, Button, message, Popconfirm, Input, Space, Drawer, Row, Form, Col, Image, Divider, Flex } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import React, { useEffect, useState, useRef } from 'react'
 import { useLoginStore } from '@/store/useLoginStore';
 import { useRouter } from 'next/navigation';
 
+const boxStyle = {
+  width: '100%',
+  // height: 120,
+  borderRadius: 6,
+  // border: '1px solid #40a9ff',
+};
 
 function Home() {
   const loginStatus = useLoginStore(state => state.loginStatus);
@@ -20,6 +26,14 @@ function Home() {
   const [selectedFund, setSelectedFund] = useState('')// 传递点击的基金 
   const [selectedFundId, setSelectedFundId] = useState(0)// 传递点击的基金 
 
+  //买入基金
+  // Set default values
+  const [givenCost, setGivenCost] = useState(10.0); // 默认当前成本
+  const [givenNum, setGivenNum] = useState(1.0); // 默认当前持仓
+  // Form instance for controlling and accessing form values
+  const [form] = Form.useForm();
+
+
   const showChart = (record) => {
     setSelectedFund(record.name)
     setSelectedFundId(record.fid.toString().padStart(6, '0'))
@@ -31,13 +45,110 @@ function Home() {
 
   //抽屉-买入
   const [openOpera, setOpenOpera] = useState(false);
-  const showOpera = (record) => {
+  const showOpera = async (record) => {
+    //清空之前的input
+    form.setFieldsValue({
+      newCost: 0,
+      newNum: 0,
+    });
+
+    // 开启买入抽屉获取该基金的position
+    try {
+      const response = await fetch(`/api/getFundPosition?fid=${record.fid}&userId=${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setGivenCost(data.record.yuanjia);
+        setGivenNum(data.record.fenshu);
+        form.setFieldsValue({
+          givenCost: data.record.yuanjia,
+          givenNum: data.record.fenshu,
+          // givenCost: givenCost,
+          // givenNum: givenNum,
+        });
+        // console.log('seted setGivenCost and setGivenNum');
+      } else if (response.status === 500) {
+        // Handle the case where no records are found in the database
+        setGivenCost(0);
+        setGivenNum(0);
+        form.setFieldsValue({
+          givenCost: 0,
+          givenNum: 0,
+        });
+        console.log('No records found, keeping default values.');
+      }
+    } catch (error) {
+      console.error('Failed to fetch fund details:', error);
+    }
+
     setSelectedFund(record.name)
     setSelectedFundId(record.fid.toString().padStart(6, '0'))
     setOpenOpera(true);
   };
   const onCloseOpera = () => {
     setOpenOpera(false);
+  };
+
+  //买入基金逻辑：
+  //买入表单提交
+  const onFinish = async (values) => {
+    //直接提交，则(不管是否有预览结果都重新计算)计算newNum和newCost再返回values
+    // console.log('Got values:', values);
+    const newNum = Number(givenNum) + Number(values.num); // 最终持仓数
+    const newCost = ((givenCost * givenNum) + (values.cost * values.num)) / newNum; // 最终成本价
+    values.newNum = newNum;
+    values.newCost = newCost;
+    // console.log('calculated values:', values);
+    //提交修改
+    try {
+      const response = await fetch(`/api/positionChange?fid=${selectedFundId}&userId=${userId}&newNum=${values.newNum}&newCost=${values.newCost}`, {
+        method: 'POST', // 确保使用正确的 HTTP 方法
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // console.log(data);
+        messageApi.open({
+          type: 'success',
+          content: data.message,
+        });
+      } else {
+        messageApi.open({
+          type: 'eorror',
+          content: data.message,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to add to favorites:', error);
+      // alert('Failed to add to favorites. Please try again.'); // 显示一个错误消息
+    }
+
+  };
+  //预览结果
+  // Logic for calculating and setting the final holdings and final cost price
+  const handlePreviewResult = () => {
+    form.validateFields(['cost', 'num']).then((values) => {
+      const { cost, num } = values;
+      const newNum = Number(givenNum) + Number(num); // 最终持仓数
+      const newCost = ((givenCost * givenNum) + (cost * num)) / newNum; // 最终成本价
+
+      // Update form fields with calculated values
+      form.setFieldsValue({
+        newCost: newCost.toFixed(2),
+        newNum: newNum.toFixed(2),
+      });
+    }).catch((info) => {
+      console.log('Validate Failed:', info);
+      // message.error('请先输入买入数量和买入价格！');
+    });
   };
 
   //搜索Start
@@ -269,11 +380,6 @@ function Home() {
 
 
 
-
-
-
-
-
   useEffect(() => {
     if (!loginStatus) {
       router.push('/login');
@@ -365,32 +471,80 @@ function Home() {
         title={selectedFund}
         onClose={onCloseOpera}
         open={openOpera}
-        extra={
-          <Space>
-            <Button onClick={onCloseOpera}>Cancel</Button>
-            <Button type="primary" onClick={onCloseOpera}>
-              OK
-            </Button>
-          </Space>
-        }
       >
-        <Form layout="vertical" hideRequiredMark>
-          <Row gutter={16}>
-            <Col span={30}>
-              <Form.Item
-                name=""
-                label="Name"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please enter user name',
-                  },
-                ]}
-              >
-                <Input placeholder="Please enter user name" />
-              </Form.Item>
-            </Col>
-          </Row>
+        {/* API 获取数据表单 */}
+        <Form form={form} layout="vertical" autoComplete="off" onFinish={onFinish}>
+          <Col span={30}>
+            <Form.Item name="givenCost" label="当前成本" initialValue={givenCost}>
+              <Input placeholder="当前成本" disabled={true} />
+            </Form.Item>
+          </Col>
+          <Col span={30}>
+            <Form.Item name="givenNum" label="当前持仓" initialValue={givenNum}>
+              <Input placeholder="当前持仓" disabled={true} />
+            </Form.Item>
+          </Col>
+
+          {/* 用户输入表单 */}
+          <Col span={30}>
+            <Form.Item
+              name="cost"
+              label="买入 价格"
+              rules={[
+                {
+                  required: 'ture',
+                  message: '请输入正确的价格',
+                  pattern: '^([-]?[1-9][0-9]*|0)$'
+                },
+              ]}
+            >
+              <Input placeholder="请输入买入价格：" />
+            </Form.Item>
+          </Col>
+          <Col span={30}>
+
+            <Form.Item
+              name="num"
+              label="买入 数量"
+              rules={[
+                {
+                  required: 'true',
+                  message: '请输入正确的数量',
+                  pattern: '^([-]?[1-9][0-9]*|0)$'
+                },
+              ]}
+            >
+              <Input placeholder="请输入买入数量：" />
+            </Form.Item>
+            <Row span={50}>
+              <Flex style={boxStyle} justify={'space-evenly'} align={'center'}>
+                <Button type="primary" htmlType="submit">确认买入</Button>
+                <Button onClick={handlePreviewResult}>预览结果</Button>
+              </Flex>
+            </Row>
+          </Col>
+          <Divider />
+
+          {/* 前端计算预览结果表单 */}
+          <Col span={30}>
+            <Form.Item
+              name="newCost"
+              label="最终成本价"
+              disable="ture"
+            // initialValue={0}
+            >
+              <Input placeholder="最终成本价" disabled={true} />
+            </Form.Item>
+          </Col>
+          <Col span={30}>
+            <Form.Item
+              name="newNum"
+              label="最终持仓数"
+            // initialValue={0}
+            >
+              <Input placeholder="最终持仓数" disabled={true} />
+            </Form.Item>
+          </Col>
         </Form>
       </Drawer>
     </>

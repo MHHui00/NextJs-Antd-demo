@@ -111,12 +111,13 @@ model user {
   uid      Int        @id @default(autoincrement())
   username String     @db.VarChar(10)
   password String     @db.VarChar(10)
+  admin    Boolean
   zhangben zhangben[]
   zixuan   zixuan[]
 }
 
 model zhangben {
-  fid       String  @id @db.VarChar(6)
+  fid       String  @db.VarChar(6)
   name      String? @db.VarChar(60)
   fenshu    Float?
   yuanjia   Float?
@@ -136,11 +137,12 @@ model zhangben {
   uid       Int
   user      user    @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "zhangben_uid")
 
+  @@id([fid, uid])
   @@index([uid], map: "zhangben_uid")
 }
 
 model zixuan {
-  fid    String  @id @db.VarChar(6)
+  fid    String  @db.VarChar(6)
   w01    Float?
   w02    Float?
   w03    Float?
@@ -199,5 +201,6 @@ model zixuan {
   uid    Int
   user   user    @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "zixuan_uid")
 
+  @@id([fid, uid])
   @@index([uid], map: "zixuan_uid")
 }

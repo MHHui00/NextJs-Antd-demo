@@ -33,8 +33,10 @@ export async function POST(req, res) {
       // 检查 fid 是否已存在于 zixuan 表中
       const existingEntry = await prisma.zixuan.findUnique({
         where: {
-          fid: fid,
-          uid: +userId,
+          fid_uid: {
+            fid: fid,
+            uid: +userId,
+          },
         },
       });
 
