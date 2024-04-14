@@ -259,7 +259,7 @@ function Home() {
     },
     {
       title: '基金名称',
-      width: '15%',
+      width: '25%',
       dataIndex: 'name',
       key: 'age',
       fixed: 'left',
@@ -285,7 +285,7 @@ function Home() {
       title: '实时涨幅',
       dataIndex: 'rate',
       key: '1',
-      width: 50,
+      width: 25,
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.rate - b.rate,
       onCell: (record) => ({
@@ -298,7 +298,7 @@ function Home() {
       title: '实时净值',
       dataIndex: 'value',
       key: '2',
-      width: 50,
+      width: 25,
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.value - b.value,
     },
@@ -306,7 +306,7 @@ function Home() {
       title: '基金类型',
       dataIndex: 'leixin',
       key: '3',
-      width: 50,
+      width: 40,
     },
     {
       title: '拼音代码',
@@ -420,7 +420,7 @@ function Home() {
         columns={columns}
         dataSource={data}
         scroll={{
-          x: 1500,
+          x: 1000,
           y: 600,
         }}
         locale={{
