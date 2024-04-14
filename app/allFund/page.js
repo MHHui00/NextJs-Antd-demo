@@ -285,7 +285,7 @@ function Home() {
       title: '实时涨幅',
       dataIndex: 'rate',
       key: '1',
-      width: 25,
+      width: 30,
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.rate - b.rate,
       onCell: (record) => ({
@@ -298,7 +298,7 @@ function Home() {
       title: '实时净值',
       dataIndex: 'value',
       key: '2',
-      width: 25,
+      width: 30,
       defaultSortOrder: 'descend',
       sorter: (a, b) => a.value - b.value,
     },
@@ -318,7 +318,7 @@ function Home() {
       title: 'Action',
       key: 'operation',
       fixed: 'right',
-      width: '15%',
+      width: '18%',
       render: (text, record) =>
         <>
           {contextHolder}
