@@ -155,8 +155,10 @@ const page = () => {
   const showOpera = async (record) => {
     //清空之前的input
     form.setFieldsValue({
-      newCost: 0,
-      newNum: 0,
+      newCost: '',      //清空
+      newNum: '',
+      cost: '',
+      num: '',
     });
 
     // 开启买入抽屉获取该基金的position
