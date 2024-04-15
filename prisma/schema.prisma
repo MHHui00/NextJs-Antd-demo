@@ -110,7 +110,7 @@ model oprec {
 model user {
   uid      Int        @id @default(autoincrement())
   username String     @db.VarChar(10)
-  password String     @db.VarChar(10)
+  password String     @db.VarChar(32)
   admin    Boolean
   zhangben zhangben[]
   zixuan   zixuan[]

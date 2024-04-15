@@ -112,6 +112,7 @@ const App = () => {
         </Form.Item>
 
         <Form.Item>
+          {contextHolder}
           <Button type="primary" htmlType="submit" className="login-form-button">
             登陆
           </Button>

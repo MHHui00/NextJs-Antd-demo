@@ -1,8 +1,11 @@
 import { PrismaClient } from '@prisma/client'
+import md5 from 'crypto-js/md5';
 
 export async function GET(request) {
     const uname = request.nextUrl.searchParams.get("username");
-    const pw = request.nextUrl.searchParams.get("password");
+    // const pw = request.nextUrl.searchParams.get("password");
+    const pw = md5(request.nextUrl.searchParams.get("password")).toString();
+    console.log(pw);
 
     const prisma = new PrismaClient();
     const result = await prisma.user.findMany({
