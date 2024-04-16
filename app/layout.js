@@ -93,7 +93,7 @@ function RootLayout({ children }) {
         <AntdRegistry>
           {/* <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} justify='space-evenly' /> */}
           {/* {typeof window !== 'undefined' && loginStatus && <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />} */}
-          {isClientReady && loginStatus && <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items}><SubMenu style={{float: 'right'}}><Menu.Item key="setting:1">Option 1</Menu.Item></SubMenu></Menu>}
+          {isClientReady && loginStatus && <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items}></Menu>}
           {children}
         </AntdRegistry>
       </body>
