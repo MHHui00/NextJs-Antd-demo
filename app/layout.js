@@ -1,7 +1,7 @@
 'use client'
 import React from 'react';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
-import { Flex, Menu, Layout, Dropdown, Space, Button } from 'antd';
+import { Flex, Menu, Layout, Dropdown, Space, Button, Divider } from 'antd';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'
 import { useLoginStore } from '@/store/useLoginStore';
@@ -15,6 +15,7 @@ function RootLayout({ children }) {
   const loginStatus = useLoginStore(state => state.loginStatus);
   const userName = useLoginStore(state => state.userName);
   const userId = useLoginStore(state => state.userId);
+  // const userId = useLoginStore(state => state.userId);
 
   const router = useRouter();
 
@@ -70,6 +71,7 @@ function RootLayout({ children }) {
     {
       label: '用戶管理',
       key: 'userManage',
+      // disabled: true,
     },
     // {
     //   label: (
@@ -134,7 +136,7 @@ function RootLayout({ children }) {
                         fontSize: '1.5em',
                         marginLeft: '5px'
                       }} />
-                    <Button onClick={() => handleLogout()}>登出</Button>
+                    <Button onClick={() => handleLogout()} size='small'>登出</Button>
                   </div>
                 }
               </Header>
@@ -144,6 +146,7 @@ function RootLayout({ children }) {
                   // backgroundColor: 'rgb(238,246, 256)',
                   flex: 1,
                   // overflow: 'auto',  // 添加滚动条
+                  height: '900px',
                 }}
               >
                 {children}
@@ -157,6 +160,7 @@ function RootLayout({ children }) {
                   // backgroundColor: 'white',
                 }}
               >
+                <Divider/>
                 基金管理系统 ©{new Date().getFullYear()} Created by 2020055585
               </Footer>
             </AntdRegistry>

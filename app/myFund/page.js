@@ -424,7 +424,7 @@ const page = () => {
     },
     {
       title: '近1天',
-      dataIndex: 'R02',
+      dataIndex: 'R01',
       key: '10',
       width: 75,
       sorter: (a, b) => a.R01 - b.R01,
@@ -810,6 +810,9 @@ const page = () => {
           type: 'success',
           content: data.message,
         });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000)
       } else {
         messageApi.open({
           type: 'eorror',
