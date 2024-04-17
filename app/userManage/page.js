@@ -26,11 +26,13 @@ const page = () => {
   const [selectedUserId, setSelectedUserId] = useState(0)// 传递点击的userID 
   const [selectedUserName, setSelectedUserName] = useState('')// 传递点击的userName 
   const [radioValue, setRadioValue] = useState(false);
+  const [oldPassword, setOldPassword] = useState('');
 
   const showOpera = async (record) => {
     //打开时保存目标记录
     setSelectedUserName(record.username)
     setSelectedUserId(record.uid)
+    setOldPassword(record.password)
 
     //填充表格
     form.setFieldsValue({ newPassword: record.password });
@@ -42,13 +44,16 @@ const page = () => {
   const onCloseOpera = () => {
     setSelectedUserName('');
     setSelectedUserId(0);
+    setOldPassword('')
     setOpenOpera(false);
   };
 
   const onFinish = async (values) => {
     values.privilege = JSON.parse(values.privilege);  //privilege如果使用默认值返回是boolean，但是经修改过后form收集回来会变成字符串。而字符串只包含 "true" 或 "false"所以JSON.parse可保证最后是boolean。
-    // console.log(values);
-    values.newPassword = md5(values.newPassword).toString();    //
+    // console.log(record);
+    if (values.newPassword !== oldPassword) {
+      values.newPassword = md5(values.newPassword).toString();    //
+    }
     try {
       const response = await fetch(`/api/updateUser?uid=${selectedUserId}&password=${values.newPassword}&admin=${values.privilege}`, {
         method: 'POST', // 确保使用正确的 HTTP 方法
