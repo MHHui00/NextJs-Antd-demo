@@ -145,8 +145,9 @@ function RootLayout({ children }) {
                   padding: '10px 10px 10px 10px',
                   // backgroundColor: 'rgb(238,246, 256)',
                   flex: 1,
-                  // overflow: 'auto',  // 添加滚动条
-                  height: '900px',
+                  overflow: 'auto',  // 添加滚动条
+                  // height: '900px',
+                  padding: '10px',
                 }}
               >
                 {children}
@@ -155,7 +156,7 @@ function RootLayout({ children }) {
                 style={{
                   textAlign: 'center',
                   paddingTop: '0px',
-                  backgroundColor: 'rgb(238,246, 256)'
+                  backgroundColor: 'rgb(238,246, 256)',
                   // paddingBottom: '20px',
                   // backgroundColor: 'white',
                 }}

@@ -31,6 +31,13 @@ export async function GET(request) {
             'Content-Type': 'application/json',
           },
         })
+      }else{
+        return new Response(JSON.stringify({ message: 'no result on zixuan table' }), {
+          status: 409,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
       }
     } catch (error) {
       console.error('数据库操作失败', error);

@@ -138,7 +138,7 @@ model zhangben {
   user      user    @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "zhangben_uid")
 
   @@id([fid, uid])
-  @@index([uid], map: "zhangben_uid")
+  @@index([uid], map: "zhangben_user_uid_fk")
 }
 
 model zixuan {
@@ -202,5 +202,5 @@ model zixuan {
   user   user    @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "zixuan_uid")
 
   @@id([fid, uid])
-  @@index([uid], map: "zixuan_uid")
+  @@index([uid], map: "zixuan_user_uid_fk")
 }

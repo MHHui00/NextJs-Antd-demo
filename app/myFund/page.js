@@ -139,6 +139,7 @@ const page = () => {
   const [givenNum, setGivenNum] = useState(1.0); // 默认当前持仓
   // Form instance for controlling and accessing form values
   const [form] = Form.useForm();
+  const [transactionType, setTransactionType] = useState("")
 
 
   const showChart = (record) => {
@@ -152,7 +153,7 @@ const page = () => {
 
   //抽屉-买入
   const [openOpera, setOpenOpera] = useState(false);
-  const showOpera = async (record) => {
+  const showOpera = async (record, type) => {
     //清空之前的input
     form.setFieldsValue({
       newCost: '',      //清空
@@ -181,8 +182,11 @@ const page = () => {
           // givenCost: givenCost,
           // givenNum: givenNum,
         });
-        // console.log('seted setGivenCost and setGivenNum');
-      } else if (response.status === 500) {
+        setSelectedFund(record.name)
+        setSelectedFundId(record.fid.toString().padStart(6, '0'))
+        setTransactionType(type)  //记录交易类型
+        setOpenOpera(true);
+      } else if (response.status === 500 && type === "buy") {
         // Handle the case where no records are found in the database
         setGivenCost(0);
         setGivenNum(0);
@@ -190,15 +194,23 @@ const page = () => {
           givenCost: 0,
           givenNum: 0,
         });
+        setSelectedFund(record.name)
+        setSelectedFundId(record.fid.toString().padStart(6, '0'))
+        setTransactionType(type)  //记录交易类型
+        setOpenOpera(true);
         console.log('No records found, keeping default values.');
+      } else if (response.status === 500 && type === "sell") {  //没有持仓是，不能打开卖出界面
+        console.log('No buy record found, cant sell.');
+        messageApi.open({
+          type: 'error',
+          content: "您没有该基金的持仓记录，无法卖出",
+        });
       }
     } catch (error) {
       console.error('Failed to fetch fund details:', error);
     }
 
-    setSelectedFund(record.name)
-    setSelectedFundId(record.fid.toString().padStart(6, '0'))
-    setOpenOpera(true);
+
   };
   const onCloseOpera = () => {
     setOpenOpera(false);
@@ -244,20 +256,46 @@ const page = () => {
   //预览结果
   // Logic for calculating and setting the final holdings and final cost price
   const handlePreviewResult = () => {
-    form.validateFields(['cost', 'num']).then((values) => {
-      const { cost, num } = values;
-      const newNum = Number(givenNum) + Number(num); // 最终持仓数
-      const newCost = ((givenCost * givenNum) + (cost * num)) / newNum; // 最终成本价
+    if (transactionType === 'buy') {
+      form.validateFields(['cost', 'num']).then((values) => {
+        const { cost, num } = values;
+        const newNum = Number(givenNum) + Number(num); // 最终持仓数
+        const newCost = ((givenCost * givenNum) + (cost * num)) / newNum; // 最终成本价
 
-      // Update form fields with calculated values
-      form.setFieldsValue({
-        newCost: newCost.toFixed(2),
-        newNum: newNum.toFixed(2),
+        // Update form fields with calculated values
+        form.setFieldsValue({
+          newCost: newCost.toFixed(2),
+          newNum: newNum.toFixed(2),
+        });
+      }).catch((info) => {
+        console.log('Validate Failed:', info);
+        // message.error('请先输入买入数量和买入价格！');
       });
-    }).catch((info) => {
-      console.log('Validate Failed:', info);
-      // message.error('请先输入买入数量和买入价格！');
-    });
+    }
+    if (transactionType === 'sell') {
+      form.validateFields(['cost', 'num']).then((values) => {
+        const { cost, num } = values;
+        const newNum = Number(givenNum) - Number(num); // 最终持仓数
+        const newCost = ((givenCost * givenNum) - (cost * num)) / newNum; // 最终成本价
+
+        if(newNum >= 0){      //做基本的检查
+          // Update form fields with calculated values
+          form.setFieldsValue({
+            newCost: newCost.toFixed(2),
+            newNum: newNum.toFixed(2),
+          });
+        }else{
+          messageApi.open({
+            type: 'error',
+            content: "卖出份数超出最大值",
+          });
+        }
+      }).catch((info) => {
+        console.log('Validate Failed:', info);
+        // message.error('请先输入买入数量和买入价格！');
+      });
+    }
+    console.log(form);
   };
 
   const columns = [
@@ -772,7 +810,18 @@ const page = () => {
           </Popconfirm>
           {/* <Button onClick={error} size='small'>买入</Button> */}
           <Button onClick={() => showChart(record)} size='small'>查看图表</Button>
-          <Button onClick={() => showOpera(record)} size='small'>买入</Button>
+          {/* <Button onClick={() => showOpera(record)} size='small'>买入</Button> */}
+          <Popconfirm
+            title="交易"
+            description="选择交易类型"
+            onConfirm={() => showOpera(record, "buy")}
+            onCancel={() => showOpera(record, "sell")}
+            okText="买入"
+            cancelText="卖出"
+          >
+            {/* <Button onClick={() => showOpera(record)} size='small'>买入</Button> */}
+            <Button size='small'>交易</Button>
+          </Popconfirm>
           {/* <Button onClick={error} size='small'>查看图表</Button> */}
         </>
     }
@@ -922,7 +971,7 @@ const page = () => {
       </Drawer>
 
       <Drawer
-        title={selectedFund}
+        title={(transactionType === "buy" ? "买入" : "卖出") + ":" + selectedFund}
         onClose={onCloseOpera}
         open={openOpera}
       >
@@ -943,36 +992,36 @@ const page = () => {
           <Col span={30}>
             <Form.Item
               name="cost"
-              label="买入 价格"
+              label="买入/卖出 价格"
               rules={[
                 {
                   required: 'ture',
                   message: '请输入正确的价格',
-                  pattern: '^([-]?[1-9][0-9]*|0)$'
+                  pattern: new RegExp(/^[1-9]\d*(\.\d+)?$|^0\.\d*[1-9]\d*$/),
                 },
               ]}
             >
-              <Input placeholder="请输入买入价格：" />
+              <Input placeholder="请输入买入/卖出价格：" />
             </Form.Item>
           </Col>
           <Col span={30}>
 
             <Form.Item
               name="num"
-              label="买入 数量"
+              label="买入/卖出 数量"
               rules={[
                 {
                   required: 'true',
                   message: '请输入正确的数量',
-                  pattern: '^([-]?[1-9][0-9]*|0)$'
+                  pattern: '^([1-9][0-9]*|0)$'
                 },
               ]}
             >
-              <Input placeholder="请输入买入数量：" />
+              <Input placeholder="请输入买入/卖出数量：" />
             </Form.Item>
             <Row span={50}>
               <Flex style={boxStyle} justify={'space-evenly'} align={'center'}>
-                <Button type="primary" htmlType="submit">确认买入</Button>
+                <Button type="primary" htmlType="submit">确认交易</Button>
                 <Button onClick={handlePreviewResult}>预览结果</Button>
               </Flex>
             </Row>

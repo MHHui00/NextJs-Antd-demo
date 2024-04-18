@@ -112,16 +112,11 @@ function Home() {
   //买入基金逻辑：
   //买入表单提交
   const onFinish = async (values) => {
-        //直接提交，则(不管是否有预览结果都重新计算)计算newNum和newCost再返回values
-        // console.log('Got values:', values);
-        // const newNum = Number(givenNum) + Number(values.num); // 最终持仓数
-        // const newCost = ((givenCost * givenNum) + (values.cost * values.num)) / newNum; // 最终成本价
-        // values.newNum = newNum;
-        // values.newCost = newCost;
-        // console.log('calculated values:', values);
-
     //如果不按预览直接提交交易，也必须调用预览按钮的函数，把计算结果覆盖收集回来的form value
-    handlePreviewResult();
+    const canContinue = await handlePreviewResult(); // 等待结果
+    if (!canContinue) {
+      return; // 如果 handlePreviewResult 返回 false，停止执行
+    }
     values.newNum = form.getFieldValue('newNum');
     values.newCost = form.getFieldValue('newCost');
     //提交修改
@@ -139,6 +134,7 @@ function Home() {
           type: 'success',
           content: data.message,
         });
+        onCloseOpera();
       } else {
         messageApi.open({
           type: 'error',
@@ -153,47 +149,74 @@ function Home() {
   };
   //预览结果
   // Logic for calculating and setting the final holdings and final cost price
-  const handlePreviewResult = () => {
-    if (transactionType === 'buy') {
-      form.validateFields(['cost', 'num']).then((values) => {
-        const { cost, num } = values;
-        const newNum = Number(givenNum) + Number(num); // 最终持仓数
-        const newCost = ((givenCost * givenNum) + (cost * num)) / newNum; // 最终成本价
+  // const handlePreviewResult2 = async () => {
+  //   if (transactionType === 'buy') {
+  //     form.validateFields(['cost', 'num']).then((values) => {
+  //       const { cost, num } = values;
+  //       const newNum = Number(givenNum) + Number(num); // 最终持仓数
+  //       const newCost = ((givenCost * givenNum) + (cost * num)) / newNum; // 最终成本价
 
-        // Update form fields with calculated values
-        form.setFieldsValue({
-          newCost: newCost.toFixed(2),
-          newNum: newNum.toFixed(2),
+  //       // Update form fields with calculated values
+  //       form.setFieldsValue({
+  //         newCost: newCost.toFixed(2),
+  //         newNum: newNum.toFixed(2),
+  //       });
+  //     }).catch((info) => {
+  //       console.log('Validate Failed:', info);
+  //     });
+  //   }
+  //   if (transactionType === 'sell') {
+  //     form.validateFields(['cost', 'num']).then((values) => {
+  //       const { cost, num } = values;
+  //       const newNum = Number(givenNum) - Number(num); // 最终持仓数
+  //       const newCost = ((givenCost * givenNum) - (cost * num)) / newNum; // 最终成本价
+
+  //       if (newNum >= 0) {      //做基本的检查
+  //         // Update form fields with calculated values
+  //         form.setFieldsValue({
+  //           newCost: newCost.toFixed(2),
+  //           newNum: newNum.toFixed(2),
+  //         });
+  //       } else {
+  //         messageApi.open({
+  //           type: 'error',
+  //           content: "卖出份数超出最大值",
+  //         });
+  //         return false; // 返回 false 表示不应继续执行
+  //       }
+  //     }).catch((info) => {
+  //       console.log('Validate Failed:', info);
+  //       // message.error('请先输入买入数量和买入价格！');
+  //     });
+  //   }
+  //   // console.log(form);
+  // };
+  const handlePreviewResult = async () => {       //GPT
+    try {
+      const values = await form.validateFields(['cost', 'num']);
+      const { cost, num } = values;
+      const newNum = transactionType === 'buy' ? Number(givenNum) + Number(num) : Number(givenNum) - Number(num);
+      if (newNum < 0) {
+        messageApi.open({
+          type: 'error',
+          content: "卖出份数超出最大值",
         });
-      }).catch((info) => {
-        console.log('Validate Failed:', info);
-        // message.error('请先输入买入数量和买入价格！');
+        return false; // 返回 false 表示不应继续执行
+      }
+      const newCost = transactionType === 'buy' ?
+                      ((givenCost * givenNum) + (cost * num)) / newNum :
+                      ((givenCost * givenNum) - (cost * num)) / newNum;
+  
+      form.setFieldsValue({
+        newCost: newCost.toFixed(2),
+        newNum: newNum.toFixed(2),
       });
+  
+      return true; // 成功计算，可以继续执行
+    } catch (info) {
+      console.log('Validate Failed:', info);
+      return false; // 校验失败，不继续执行
     }
-    if (transactionType === 'sell') {
-      form.validateFields(['cost', 'num']).then((values) => {
-        const { cost, num } = values;
-        const newNum = Number(givenNum) - Number(num); // 最终持仓数
-        const newCost = ((givenCost * givenNum) - (cost * num)) / newNum; // 最终成本价
-
-        if(newNum >= 0){      //做基本的检查
-          // Update form fields with calculated values
-          form.setFieldsValue({
-            newCost: newCost.toFixed(2),
-            newNum: newNum.toFixed(2),
-          });
-        }else{
-          messageApi.open({
-            type: 'error',
-            content: "卖出份数超出最大值",
-          });
-        }
-      }).catch((info) => {
-        console.log('Validate Failed:', info);
-        // message.error('请先输入买入数量和买入价格！');
-      });
-    }
-    console.log(form);
   };
 
   //搜索Start
@@ -549,7 +572,8 @@ function Home() {
                 {
                   required: 'ture',
                   message: '请输入正确的价格',
-                  pattern: '^([-]?[1-9][0-9]*|0)$'
+                  // pattern: '^([1-9][0-9]*|0)$'
+                  pattern: new RegExp(/^[1-9]\d*(\.\d+)?$|^0\.\d*[1-9]\d*$/),
                 },
               ]}
             >
@@ -565,7 +589,7 @@ function Home() {
                 {
                   required: 'true',
                   message: '请输入正确的数量',
-                  pattern: '^([-]?[1-9][0-9]*|0)$'
+                  pattern: '^([1-9][0-9]*|0)$'
                 },
               ]}
             >

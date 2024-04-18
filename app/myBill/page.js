@@ -471,7 +471,8 @@ const page = () => {
                 {
                   required: 'ture',
                   message: '请输入正确的价格',
-                  pattern: '^([-]?[1-9][0-9]*|0)$'
+                  // pattern: '^([1-9][0-9]*|0)$'
+                  pattern: new RegExp(/^[1-9]\d*(\.\d+)?$|^0\.\d*[1-9]\d*$/),
                 },
               ]}
             >
@@ -487,7 +488,7 @@ const page = () => {
                 {
                   required: 'true',
                   message: '请输入正确的数量',
-                  pattern: '^([-]?[1-9][0-9]*|0)$'
+                  pattern: '^([1-9][0-9]*|0)$'
                 },
               ]}
             >

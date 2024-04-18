@@ -15,6 +15,7 @@ const boxStyle = {
 
 const page = () => {
   const loginStatus = useLoginStore(state => state.loginStatus);
+  const userId = useLoginStore(state => state.userId);
   const router = useRouter();
   const [data, setData] = useState([]);
   //---
@@ -86,8 +87,43 @@ const page = () => {
 
   }
 
-  const deleteUser = async () => {
-    console.log("deleted");
+  const deleteUser = async (record) => {
+    // console.log("deleted");
+    if (record.uid !== userId) {
+      try {
+        const response = await fetch(`/api/deleteUser?uid=${record.uid}`, {
+          method: 'DELETE', // 确保使用正确的 HTTP 方法
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          messageApi.open({
+            type: 'success',
+            content: data.message,
+          });
+          setTimeout(() => {
+            // router.refresh();  //好像不work
+            window.location.reload();
+          }, 2000)
+        } else {
+          messageApi.open({
+            type: 'error',
+            content: data.message,
+          });
+          // console.error("API call failed:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Fetching error:", error);
+        setData({ error: "Failed to load data." }); // 设置错误信息，以便在页面上显示
+      }
+    } else {
+      messageApi.open({
+        type: 'error',
+        content: '不能删除自己',
+      });
+    }
   }
 
 
