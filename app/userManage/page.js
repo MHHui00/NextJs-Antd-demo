@@ -163,7 +163,7 @@ const page = () => {
       width: 30,
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'operation',
       fixed: 'right',
       width: '15%',

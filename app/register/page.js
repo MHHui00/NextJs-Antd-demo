@@ -80,7 +80,7 @@ const App = () => {
           type: 'success',
           content: data.message + '，即将跳转到登陆页',
         });
-        setTimeout(()=>{
+        setTimeout(() => {
           router.push('/login');
         }, 2000)
       } else {
@@ -97,6 +97,7 @@ const App = () => {
 
   return (
     <Flex gap="middle" vertical justify='center' align='center' style={boxStyle}>
+      <h2>注册用户</h2>
       <Form
         {...formItemLayout}
         form={form}
@@ -137,7 +138,7 @@ const App = () => {
 
         <Form.Item
           name="confirm"
-          label="再次确认密码"
+          label="确认密码"
           dependencies={['password']}
           hasFeedback
           rules={[
@@ -158,14 +159,16 @@ const App = () => {
           <Input.Password />
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
-          {contextHolder}
-          <Button type="primary" htmlType="submit">
-            注册
-          </Button>
-          <p>
-            已经有账号？
-            <Link href={"/login"}>立即登陆</Link>
-          </p>
+          <Flex justify='center' vertical>
+            {contextHolder}
+            <Button type="primary" htmlType="submit">
+              注册
+            </Button>
+            <p>
+              已经有账号？
+              <Link href={"/login"}>立即登陆</Link>
+            </p>
+          </Flex>
         </Form.Item>
       </Form>
     </Flex>

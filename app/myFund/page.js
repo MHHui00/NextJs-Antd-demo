@@ -791,7 +791,7 @@ const page = () => {
       render: (text) => <div>{text}</div>,
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'operation',
       fixed: 'right',
       width: 90,
@@ -799,12 +799,12 @@ const page = () => {
         <>
           {contextHolder}
           <Popconfirm
-            title="Delete the task"
-            description="Are you sure to delete this task?"
+            title="删除自选"
+            description="您确定要从自选列表中移除吗?"
             onConfirm={() => deltetFromMyFund(record)}
             // onCancel={cancel}
-            okText="Yes"
-            cancelText="No"
+            okText="是"
+            cancelText="否"
           >
             <Button size='small'>删除自选</Button>
           </Popconfirm>

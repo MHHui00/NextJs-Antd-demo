@@ -383,7 +383,7 @@ function Home() {
       width: 80,
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'operation',
       fixed: 'right',
       width: '18%',
