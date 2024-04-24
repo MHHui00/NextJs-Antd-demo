@@ -889,6 +889,7 @@ const page = () => {
     }
     async function fetchData() {
       try {
+        // console.log('fetched data');
         const response = await fetch(`/api/myFund?userId=${userId}`);
         if (response.ok) {
           const jsonData = await response.text(); // 先获取文本内容
@@ -915,6 +916,8 @@ const page = () => {
     }
 
     fetchData();
+    const intervalId = setInterval(fetchData, 5000); // 每10秒调用一次
+    return () => clearInterval(intervalId); // 清除定时器
   }, [loginStatus, router]);
 
   return (

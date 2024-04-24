@@ -465,6 +465,7 @@ function Home() {
 
     async function fetchData() {
       try {
+        // console.log('fetched data');
         const response = await fetch('/api/allFund');
         if (response.ok) {
           const jsonData = await response.text(); // 先获取文本内容
@@ -489,7 +490,10 @@ function Home() {
       }
     }
 
-    fetchData();
+    fetchData();  //刷新页面调用一次再开始定时器
+    const intervalId = setInterval(fetchData, 5000); // 每10秒调用一次
+    return () => clearInterval(intervalId); // 清除定时器
+
   }, [loginStatus, router]);
 
   return (

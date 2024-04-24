@@ -366,6 +366,7 @@ const page = () => {
     }
     async function fetchData() {
       try {
+        // console.log('fetched data');
         const response = await fetch(`/api/myBill?userId=${userId}`);
         const data = await response.json();
         if (response.ok) {
@@ -390,6 +391,8 @@ const page = () => {
     }
 
     fetchData();
+    const intervalId = setInterval(fetchData, 5000); // 每10秒调用一次
+    return () => clearInterval(intervalId); // 清除定时器
   }, [loginStatus, router]);
 
   return (
