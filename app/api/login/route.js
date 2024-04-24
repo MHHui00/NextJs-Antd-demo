@@ -23,6 +23,7 @@ export async function GET(request) {
         const data = {
             uid: result[0].uid,
             username: result[0].username,
+            admin: result[0].admin,     
         };
         // console.log(data);
         return new Response(JSON.stringify(data), {

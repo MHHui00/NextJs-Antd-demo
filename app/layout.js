@@ -15,6 +15,7 @@ function RootLayout({ children }) {
   const loginStatus = useLoginStore(state => state.loginStatus);
   const userName = useLoginStore(state => state.userName);
   const userId = useLoginStore(state => state.userId);
+  const isAdmin = useLoginStore(state => state.isAdmin);
   // const userId = useLoginStore(state => state.userId);
 
   const router = useRouter();
@@ -71,7 +72,7 @@ function RootLayout({ children }) {
     {
       label: '用戶管理',
       key: 'userManage',
-      // disabled: true,
+      disabled: !isAdmin
     },
     // {
     //   label: (

@@ -42,6 +42,7 @@ const App = () => {
           useLoginStore.setState({ loginStatus: true });
           useLoginStore.setState({ userName: obj.username });
           useLoginStore.setState({ userId: obj.uid });
+          useLoginStore.setState({ isAdmin: obj.admin });
           router.push('/');
 
         } catch (error) {
