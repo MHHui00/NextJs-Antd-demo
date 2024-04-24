@@ -3,7 +3,7 @@ import React from 'react';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { Flex, Menu, Layout, Dropdown, Space, Button, Divider } from 'antd';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useLoginStore } from '@/store/useLoginStore';
 import { UserOutlined, DownOutlined } from '@ant-design/icons';
 const { Header, Content, Footer } = Layout;
@@ -19,25 +19,28 @@ function RootLayout({ children }) {
   // const userId = useLoginStore(state => state.userId);
 
   const router = useRouter();
+  const pathname = usePathname();   //获取url路径
 
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [current, setCurrent] = useState('allFund');
 
   const [isClientReady, setIsClientReady] = useState(false); //1. 新增状态，解决服务端和客户端不一致
 
-  const menu = (
-    <Menu items={[
-      {
-        key: '1',
-        label: (
-          <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-            1st menu item
-          </a>
-        ),
-      },
-    ]}
-    />
-  );
+  // const [currentPath, setCurrentPath] = useState('');
+
+  // const menu = (
+  //   <Menu items={[
+  //     {
+  //       key: '1',
+  //       label: (
+  //         <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+  //           1st menu item
+  //         </a>
+  //       ),
+  //     },
+  //   ]}
+  //   />
+  // );
 
   const onClick = (e) => {
     console.log('click ', e);
@@ -104,6 +107,12 @@ function RootLayout({ children }) {
     setIsClientReady(true); // 2.当客户端准备好后，设置为true
   }, [loginStatus, router]);
 
+  // 专门处理路由变化
+  useEffect(() => {
+    const highLightTab = pathname.split('/')[1] || 'allFund';   //解析url路径
+    // console.log("路由已就绪，当前路径:", highLightTab);
+    setCurrent(highLightTab);
+  }, []); 
 
   return (
     <>
@@ -162,7 +171,7 @@ function RootLayout({ children }) {
                   // backgroundColor: 'white',
                 }}
               >
-                <Divider/>
+                <Divider />
                 基金管理系统 ©{new Date().getFullYear()} Created by 2020055585
               </Footer>
             </AntdRegistry>
