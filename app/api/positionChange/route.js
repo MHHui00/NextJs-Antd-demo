@@ -50,6 +50,8 @@ export async function POST(req, res) {
           },
           select: {
             name: true,
+            value: true,
+            rate: true
           },
         });
 
@@ -71,6 +73,8 @@ export async function POST(req, res) {
             name: fund.name,
             fenshu: newNum,
             yuanjia: newCost,
+            newjia:fund.value,
+            newzhi:fund.rate
           },
         });
         // return res.status(200).json(insertedRecord);
