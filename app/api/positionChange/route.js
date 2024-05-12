@@ -22,26 +22,46 @@ export async function POST(req, res) {
       });
 
       if (existingRecord) {
-        // 如果找到记录，更新该记录
-        const updatedRecord = await prisma.zhangben.update({
-          where: {
-            fid_uid: {
-              fid: fid,
-              uid: uid,
+        //如果存在记录，并且持仓数量为0，则删除该条记录（清仓操作）
+        if (newNum === 0){
+          const deleteRecord = await prisma.zhangben.delete({
+            where:{
+              fid_uid:{
+                fid: fid,
+                uid: uid,
+              }
+            }
+          })
+          if(deleteRecord){
+            return new Response(JSON.stringify({ message: '提交成功，已清仓'}), {
+              status: 200,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+          }
+        } else{
+          // 如果找到记录，还有持仓，则更新该记录
+          const updatedRecord = await prisma.zhangben.update({
+            where: {
+              fid_uid: {
+                fid: fid,
+                uid: uid,
+              },
             },
-          },
-          data: {
-            fenshu: newNum,
-            yuanjia: newCost,
-          },
-        });
-        // return res.status(200).json(updatedRecord);
-        return new Response(JSON.stringify({...updatedRecord, message: '提交成功'}), {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
+            data: {
+              fenshu: newNum,
+              yuanjia: newCost,
+            },
+          });
+          // return res.status(200).json(updatedRecord);
+          return new Response(JSON.stringify({...updatedRecord, message: '提交成功'}), {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+        }
       } else {
         // 如果没有找到记录，从flist表查询fundName
         const fund = await prisma.flist.findUnique({
