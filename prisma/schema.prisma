@@ -79,10 +79,10 @@ model fdata {
 model flist {
   fid    String  @id @db.VarChar(6)
   name   String? @db.VarChar(255)
-  rate   Float?
+  rate   Float?  @default(0)
   leixin String? @db.VarChar(255)
   pinyin String? @db.VarChar(255)
-  value  Float
+  value  Float   @default(0)
 }
 
 model oprec {
@@ -135,7 +135,7 @@ model zhangben {
   newshouyi Float?
   bh        String? @db.Char(1)
   uid       Int
-  user      user    @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "zhangben_uid")
+  user      user    @relation(fields: [uid], references: [uid], onDelete: Cascade, onUpdate: NoAction, map: "zhangben_uid")
 
   @@id([fid, uid])
   @@index([uid], map: "zhangben_user_uid_fk")
@@ -199,8 +199,17 @@ model zixuan {
   pinyin String? @db.VarChar(32)
   bh     String? @db.Char(1)
   uid    Int
-  user   user    @relation(fields: [uid], references: [uid], onDelete: NoAction, onUpdate: NoAction, map: "zixuan_uid")
+  user   user    @relation(fields: [uid], references: [uid], onDelete: Cascade, onUpdate: NoAction, map: "zixuan_uid")
 
   @@id([fid, uid])
   @@index([uid], map: "zixuan_user_uid_fk")
+}
+
+model funds {
+  fid    String @id @db.Char(6)
+  pinyin String @db.VarChar(255)
+  name   String @db.VarChar(255)
+  leixin String @db.VarChar(255)
+  rate   Float?
+  value  Float?
 }
