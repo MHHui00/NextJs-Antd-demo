@@ -47,19 +47,21 @@ export async function DELETE(request) {
         }
 
         // 如果找到了，删除这条记录
-        await prisma.user.delete({
+        const deleteUser = await prisma.user.delete({
             where: {
                 uid: uid,
             },
         });
-
-        // return res.status(200).json({ message: 'Record deleted successfully' });
-        return new Response(JSON.stringify({ message: '删除成功' }), {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
+        
+        if (deleteUser){
+            // return res.status(200).json({ message: 'Record deleted successfully' });
+            return new Response(JSON.stringify({ message: '删除成功' }), {
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+        }
     } catch (error) {
         console.error('Error deleting record:', error);
         // return res.status(500).json({ message: 'Internal Server Error' });
