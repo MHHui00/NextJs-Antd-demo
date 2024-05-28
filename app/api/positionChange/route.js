@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-
+export const dynamic = 'force-dynamic'; // 强制动态渲染
 export async function POST(req, res) {
   if (req.method === 'POST') {
     // const { fid, uid, newNum, newCost } = req.body;

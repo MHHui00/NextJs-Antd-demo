@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
+export const dynamic = 'force-dynamic'; // 确保此路由在构建时不会被静态生成
+
 export async function GET(request) {
   const prisma = new PrismaClient();
   const result = await prisma.flist.findMany();

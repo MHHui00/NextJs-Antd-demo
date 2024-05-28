@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-
+export const dynamic = 'force-dynamic'; // 强制动态渲染
 export async function GET(request) {
   const prisma = new PrismaClient();
 //   const result = await prisma.zixuan.findMany();

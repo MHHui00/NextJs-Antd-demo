@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 // import md5 from 'crypto-js/md5';
 
 const prisma = new PrismaClient();
-
+export const dynamic = 'force-dynamic'; // 强制动态渲染
 export async function POST(request) {
   if (request.method === 'POST') {
     const uname = request.nextUrl.searchParams.get("username");
